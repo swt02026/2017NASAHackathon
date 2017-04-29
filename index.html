@@ -15,20 +15,43 @@
 <body>
   <div id="cesiumContainer"></div>
   <script>
+
     var viewer = new Cesium.Viewer('cesiumContainer');
+
+    var terrainProvider = new Cesium.CesiumTerrainProvider({
+        url : '//assets.agi.com/stk-terrain/world'
+    });
+    viewer.terrainProvider = terrainProvider;
+
     var scene = viewer.scene;
-
-
+    
     var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
-        Cesium.Cartesian3.fromDegrees(-75.62898254394531, 40.02804946899414, 0.0));
+        Cesium.Cartesian3.fromDegrees(-75.62898254394531, 40.02804946899414, 1000000));
     var model = scene.primitives.add(Cesium.Model.fromGltf({
         url : './cat-4.gltf',
         modelMatrix : modelMatrix,
         scale : 20000
     }));
 
-
     viewer.extend(Cesium.viewerCesiumInspectorMixin);
+
+    var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+
+    handler.setInputAction(function(click) {
+        var pickedObject = viewer.scene.pick(click.position);
+        if (Cesium.defined(pickedObject)) {
+            var entityId = pickedObject.id._id;
+            var oldColor = buildingMap.get(entityId).polygon.material.color;
+            buildingMap.get(entityId).polygon.material.color = pickColor;
+            selectedEntity.set(entityId, oldColor);
+
+            var currentLayer = viewer.scene.imageryLayers.get(1);
+            if (typeof currentLayer !== 'undefined') {
+                var info = currentLayer._imageryProvider._tileProvider.getTileCredits(click.position.x, click.position.y, 0);
+            }
+        }
+        console.log(click.position)
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
   </script>
 </body>
