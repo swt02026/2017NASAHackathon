@@ -24,6 +24,9 @@
     viewer.terrainProvider = terrainProvider;
 
     var scene = viewer.scene;
+
+    var pin;
+    var pinBuilder = new Cesium.PinBuilder();
     
     var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
         Cesium.Cartesian3.fromDegrees(-75.62898254394531, 40.02804946899414, 1000000));
@@ -35,22 +38,27 @@
 
     viewer.extend(Cesium.viewerCesiumInspectorMixin);
 
+    function addPin(id, position) {
+        viewer.entities.remove(pin)
+        pin = viewer.entities.add({
+            position: position,
+            billboard: {
+                image: pinBuilder.fromText(id, Cesium.Color.SALMON, 48),
+                verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                eyeOffset: new Cesium.Cartesian3(0, 0, -1000)
+            }
+        });
+    }
+
     var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
 
     handler.setInputAction(function(click) {
-        var pickedObject = viewer.scene.pick(click.position);
-        if (Cesium.defined(pickedObject)) {
-            var entityId = pickedObject.id._id;
-            var oldColor = buildingMap.get(entityId).polygon.material.color;
-            buildingMap.get(entityId).polygon.material.color = pickColor;
-            selectedEntity.set(entityId, oldColor);
-
-            var currentLayer = viewer.scene.imageryLayers.get(1);
-            if (typeof currentLayer !== 'undefined') {
-                var info = currentLayer._imageryProvider._tileProvider.getTileCredits(click.position.x, click.position.y, 0);
-            }
+        var pickedObject = scene.pick(click.position);
+        if (Cesium.defined(pickedObject) && pickedObject.id !== pin) {
+            addPin(pickedObject.id.id, scene.camera.pickEllipsoid(click.position));
+        } else {
+            addPin('G', scene.camera.pickEllipsoid(click.position));
         }
-        console.log(click.position)
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
   </script>
