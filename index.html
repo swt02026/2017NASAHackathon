@@ -13,59 +13,91 @@
   </style>
 </head>
 <body>
-  <div id="cesiumContainer"></div>
-  <script>
 
-    var viewer = new Cesium.Viewer('cesiumContainer');
+    <div class="col-xs-4">
+        <ul id="map-list" class="list-group">
+            
+        </ul>  
+    </div>
+    <div class="col-xs-8">
+        <div id="cesiumContainer"></div>
+        <script>
 
-    var terrainProvider = new Cesium.CesiumTerrainProvider({
-        url : '//assets.agi.com/stk-terrain/world'
-    });
-    viewer.terrainProvider = terrainProvider;
-
-    var scene = viewer.scene;
-
-    var pin;
-    var pinBuilder = new Cesium.PinBuilder();
-    
-    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
-        Cesium.Cartesian3.fromDegrees(-75.62898254394531, 40.02804946899414, 1000000));
-    var model = scene.primitives.add(Cesium.Model.fromGltf({
-        url : './cat-4.gltf',
-        modelMatrix : modelMatrix,
-        scale : 20000
-    }));
-
-    viewer.extend(Cesium.viewerCesiumInspectorMixin);
-
-    function addPin(id, position) {
-        viewer.entities.remove(pin)
-        pin = viewer.entities.add({
-            position: position,
-            billboard: {
-                image: pinBuilder.fromText(id, Cesium.Color.SALMON, 48),
-                verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                eyeOffset: new Cesium.Cartesian3(0, 0, -1000)
+            /*function update_list(loc,scene) {
+                var degrees = cartToWgs84(loc, scene.globe.ellipsoid)
+                fetch("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" 
+                    + Cesium.Math.toDegrees(degrees.longitude)+','+Cesium.Math.toDegrees(degrees.latitude)
+                    + "&radius=5000&key=AIzaSyDnuk9cyXWzkgcDAPZBhlft0O_lqXuL-Kk")
+                .then(function (res) {
+                    if(res.ok){
+                        res.json().then(function (data) {
+                            console.log(data.entities)
+                        })
+                    }
+                })
             }
-        });
-    }
 
-    var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+            function cartToWgs84(position, ellipsoid) {
+                var x = position.x;
+                var y = position.y;
+                var z = position.z;
+                var xyz = new Cesium.Cartesian3(x, y, z);
+                var wgs84 = ellipsoid.cartesianToCartographic(xyz);
+                return wgs84
+            }*/
 
-    handler.setInputAction(function(click) {
-        var pickedObject = scene.pick(click.position);
-        if (Cesium.defined(pickedObject) && pickedObject.id !== pin) {
-            addPin(pickedObject.id.id, scene.camera.pickEllipsoid(click.position));
-        } else {
-            addPin('G', scene.camera.pickEllipsoid(click.position));
-    
-            model.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
-                    scene.camera.pickEllipsoid(click.position))
-            var snd = new Audio('sound/cat_screech.wav')
-            snd.play()
-        }
-    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+            var viewer = new Cesium.Viewer('cesiumContainer');
 
-  </script>
+            var terrainProvider = new Cesium.CesiumTerrainProvider({
+                url : '//assets.agi.com/stk-terrain/world'
+            });
+            viewer.terrainProvider = terrainProvider;
+
+            var scene = viewer.scene;
+
+            var pin;
+            var pinBuilder = new Cesium.PinBuilder();
+            
+            var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
+                Cesium.Cartesian3.fromDegrees(-75.62898254394531, 40.02804946899414, 1000000));
+            var model = scene.primitives.add(Cesium.Model.fromGltf({
+                url : './cat-4.gltf',
+                modelMatrix : modelMatrix,
+                scale : 10000
+            }));
+
+            viewer.extend(Cesium.viewerCesiumInspectorMixin);
+
+            function addPin(id, position) {
+                viewer.entities.remove(pin)
+                pin = viewer.entities.add({
+                    position: position,
+                    billboard: {
+                        image: pinBuilder.fromText(id, Cesium.Color.SALMON, 48),
+                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                        eyeOffset: new Cesium.Cartesian3(0, 0, -1000)
+                    }
+                });
+            }
+
+            var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+
+            handler.setInputAction(function(click) {
+                var pickedObject = scene.pick(click.position);
+                if (Cesium.defined(pickedObject) && pickedObject.id !== pin) {
+                    addPin(pickedObject.id.id, scene.camera.pickEllipsoid(click.position));
+                } else {
+                    addPin('G', scene.camera.pickEllipsoid(click.position));
+                    //update_list(scene.camera.pickEllipsoid(click.position), scene)
+                    model.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
+                            scene.camera.pickEllipsoid(click.position))
+                    var snd = new Audio('sound/cat_screech.wav')
+                    snd.play()
+
+                }
+            }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+        </script>
+    </div>
 </body>
 </html>
