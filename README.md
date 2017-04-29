@@ -16,9 +16,12 @@
 
 # API Using
 
-# Reference
-- [2016 Nasa Space Apps Challenge: Chatellite](https://github.com/Jinrohs/ChatelliteFE)
-- [Global Imagery Browse Services (GIBS) Examples](https://github.com/nasa-gibs/gibs-web-examples)
+# Resource
 - [Data Tools](https://earthdata.nasa.gov/earth-observation-data/tools)
 - [Cesium](http://cesiumjs.org/index.html)
 - [Cesium-Editor](https://github.com/TomPed/Cesium-Editor)
+
+
+# Reference
+- [2016 Nasa Space Apps Challenge: Chatellite](https://github.com/Jinrohs/ChatelliteFE)
+- [Global Imagery Browse Services (GIBS) Examples](https://github.com/nasa-gibs/gibs-web-examples)
