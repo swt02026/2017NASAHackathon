@@ -18,5 +18,8 @@
   "homepage": "https://github.com/swt02026/2017NASAHackathon#readme",
   "dependencies": {
     "cesium": "^1.32.1"
+  },
+  "devDependencies": {
+    "cesium": "^1.32.1"
   }
 }
