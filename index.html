@@ -61,6 +61,8 @@
     
             model.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
                     scene.camera.pickEllipsoid(click.position))
+            var snd = new Audio('sound/cat_screech.wav')
+            snd.play()
         }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
