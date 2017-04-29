@@ -58,6 +58,9 @@
             addPin(pickedObject.id.id, scene.camera.pickEllipsoid(click.position));
         } else {
             addPin('G', scene.camera.pickEllipsoid(click.position));
+    
+            model.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
+                    scene.camera.pickEllipsoid(click.position))
         }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
