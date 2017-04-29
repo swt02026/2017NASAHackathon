@@ -1,0 +1,22 @@
+{
+  "name": "2017nasahackathon",
+  "version": "1.0.0",
+  "description": "- Team Name: Chubby Cat - Repo: [NasaHackathon]( https://github.com/swt02026/2017NASAHackathon)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swt02026/2017NASAHackathon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/swt02026/2017NASAHackathon/issues"
+  },
+  "homepage": "https://github.com/swt02026/2017NASAHackathon#readme",
+  "dependencies": {
+    "cesium": "^1.32.1"
+  }
+}
