@@ -13,14 +13,15 @@
   </style>
 </head>
 <body>
-
-    <div class="col-xs-4">
-        <ul id="map-list" class="list-group">
-            
-        </ul>  
+    <div class="row">
+        <div class="col-lg-4">
+            <ul id="map-list" class="list-group">
+                
+            </ul>  
+        </div>
+        <div class="col-lg-8" id="cesiumContainer"></div>
     </div>
-    <div class="col-xs-8">
-        <div id="cesiumContainer"></div>
+</body>
         <script>
 
             /*function update_list(loc,scene) {
@@ -35,6 +36,12 @@
                         })
                     }
                 })
+            }*/
+            function update_list(params) {
+                var mapList = document.querySelector("#map-list")
+                var li = document.createElement('li')
+                li.innerText = params
+                mapList.appendChild(li)
             }
 
             function cartToWgs84(position, ellipsoid) {
@@ -44,7 +51,7 @@
                 var xyz = new Cesium.Cartesian3(x, y, z);
                 var wgs84 = ellipsoid.cartesianToCartographic(xyz);
                 return wgs84
-            }*/
+            }
 
             var viewer = new Cesium.Viewer('cesiumContainer');
 
@@ -63,19 +70,19 @@
             var model = scene.primitives.add(Cesium.Model.fromGltf({
                 url : './cat-4.gltf',
                 modelMatrix : modelMatrix,
-                scale : 10000
+                scale : 20000
             }));
 
-            viewer.extend(Cesium.viewerCesiumInspectorMixin);
+//            viewer.extend(Cesium.viewerCesiumInspectorMixin);
 
             function addPin(id, position) {
                 viewer.entities.remove(pin)
                 pin = viewer.entities.add({
                     position: position,
                     billboard: {
-                        image: pinBuilder.fromText(id, Cesium.Color.SALMON, 48),
+                        image: pinBuilder.fromText(id, Cesium.Color.SALMON, 200),
                         verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                        eyeOffset: new Cesium.Cartesian3(0, 0, -1000)
+                        eyeOffset: new Cesium.Cartesian3(0, 1000, 1000)
                     }
                 });
             }
@@ -84,10 +91,14 @@
 
             handler.setInputAction(function(click) {
                 var pickedObject = scene.pick(click.position);
+                
                 if (Cesium.defined(pickedObject) && pickedObject.id !== pin) {
                     addPin(pickedObject.id.id, scene.camera.pickEllipsoid(click.position));
                 } else {
-                    addPin('G', scene.camera.pickEllipsoid(click.position));
+                    var pos = scene.camera.pickEllipsoid(click.position)
+                    var latlong = cartToWgs84(pos, scene.globe.ellipsoid)
+                    addPin('' + latlong.longitude + '\n' + latlong.latitude, pos);
+                    update_list(Cesium.Math.toDegrees(latlong.longitude)+','+Cesium.Math.toDegrees(latlong.latitude))
                     //update_list(scene.camera.pickEllipsoid(click.position), scene)
                     model.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
                             scene.camera.pickEllipsoid(click.position))
@@ -98,6 +109,4 @@
             }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
         </script>
-    </div>
-</body>
 </html>
